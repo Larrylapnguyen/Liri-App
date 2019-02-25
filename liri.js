@@ -1,36 +1,32 @@
+// Spotify
 require("dotenv").config();
 var keys = require("./keys.js");
-
 var Spotify = require('node-spotify-api');
 var spotify = new Spotify(keys.spotify);
-
+// Axios
 var axios = require("axios");
-
+// Moment
 var moment = require('moment');
-
+// FS
 var fs = require("fs");
-
+// Arugments
 var command = process.argv[2];
-var search = process.argv[3];
 
 var nodeArgs = process.argv;
-var search = "";
 
+let search;
 for (var i = 3; i < nodeArgs.length; i++) {
-
 	if (i > 3 && i < nodeArgs.length) {
-		search = search + "+" + nodeArgs[i];
+		search = process.argv[3] + "+" + nodeArgs[i];
 	} else {
 		search += nodeArgs[i];
 	}
 }
 
-
-var spot = function (song) {
-	if (song === undefined || null || " ") {
+function spot(song) {
+	if (song === undefined || null) {
 		song = "The Sign Ace of Base";
 	}
-
 	spotify.search({
 		type: 'track',
 		query: song,
@@ -51,7 +47,7 @@ var spot = function (song) {
 }
 
 function concert(artist) {
-	if (artist === undefined || null || " ") {
+	if (artist == undefined || null) {
 		artist = "The Rolling Stones";
 	}
 	axios.get("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp").then(function (response) {
@@ -67,10 +63,13 @@ function concert(artist) {
 }
 
 function movie(title) {
-	if (movie === undefined || null || " ") {
-		movie = "Mr.Nobody";
+	if (title == undefined || null) {
+		title = "Mr.Nobody";
 	}
+	console.log("Title:---------------------------------" + title);
+
 	axios.get("http://www.omdbapi.com/?t=" + title + "&y=&plot=short&apikey=trilogy").then(function (response) {
+		// console.log(response);
 		console.log("Movie Title: " + response.data.Title);
 		console.log("Year Released: " + response.data.Year);
 		console.log("IMDB Rating: " + response.data.Ratings[0].Value);
@@ -89,13 +88,17 @@ function doIt() {
 		spot(data);
 	});
 }
+
 if (command === "spotify-this-song") {
+	console.log("Search =====" + search);
 	spot(search);
 } else if (command === "concert-this") {
+	console.log("Search =====" + search);
 	concert(search);
 } else if (command === "movie-this") {
-	console.log("Search " + search);
+	console.log("Search =====" + search);
 	movie(search);
 } else if (command === "do-what-it-says") {
+	console.log("Search =====" + search);
 	doIt();
 }
